@@ -106,42 +106,42 @@
         };
 
         function clock(){
-            var d=new Date();
+            let d = new Date();
             updateTime(d);
             updateDate(d);
-            $('player', player);
-            $('agency', agency);
-            $('callsign', callsign);
-            var animate=setTimeout(clock,100);
+            updateElement('player', player);
+            updateElement('agency', agency);
+            updateElement('callsign', callsign);
+            let animate = setTimeout(clock, 100);
         };
         
         function updateDate(dt){
-            var day=dt.getUTCDate();
-            var month=monthNames[dt.getUTCMonth()];
-            var year=dt.getUTCFullYear();
-            var d_str = day + " " + month + " " + year;
-            document.getElementById('date-span').innerHTML = d_str;
+            let day = dt.getDate();
+            let month = monthNames[dt.getMonth()];
+            let year = dt.getFullYear();
+            let d_str = `${day} ${month} ${year}`;
+            document.getElementById('date-span').textContent = d_str;
         };
         
         function updateTime(dt){
-            var h=dt.getUTCHours().toString();
-            var m=dt.getUTCMinutes().toString();
-            var s=dt.getUTCSeconds().toString();
-            h = h.length == 1 ? '0' + h : h;
-            m = m.length == 1 ? '0' + m : m;
-            s = s.length == 1 ? '0' + s : s;
-            var t_str = h + ":" + m + ":" + s + " ";
-            document.getElementById('time-span').innerHTML = t_str;
+            let hour = dt.getHours().toString();
+            let min = dt.getMinutes().toString();
+            let sec = dt.getSeconds().toString();
+            hour = hour.length == 1 ? '0' + hour : hour;
+            min = min.length == 1 ? '0' + min : min;
+            sec = sec.length == 1 ? '0' + sec : sec;
+            let t_str = `${hour}:${min}:${sec} `;
+            document.getElementById('time-span').textContent = t_str;
         };
 
-        function $(id,val){
-            if(val<10){
-                val='0'+val;
+        function updateElement(id, val){
+            if(val < 10){
+                val = '0' + val;
             }
-            document.getElementById(id).innerHTML=val;
+            document.getElementById(id).textContent = val;
         };
 
-        window.onload=init;
+        window.onload = init;
     </script>
 
 </html>
