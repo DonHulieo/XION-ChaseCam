@@ -83,7 +83,7 @@
             <div class="top-left">
                 <span class="info">REC <i class="fa fa-circle text-danger Blink" aria-label="Recording"></i> AXON BODYCAM&trade;</span><br />
                 <span class="info" id="player">XXX</span>
-                <span class="info" id="callsign">[000]</span><br />
+                <span class="info" id="callsign-span">XXX [000]</span><br />
                 <span class="info" id="agency">XXX</span><br />                
                 <span class="info" id="date-span">00 XXX 0000</span>
                 <span class="info" id="time-span">00:00:00</span>
@@ -96,22 +96,34 @@
         //***edit this only for your information***
         const player = "M. HIGHTOWER";
         const agency = "LOS SANTOS SHERIFF DEPARTMENT";
-        const callsign = "[300]";
+        // const callsign = "[300]";
         //***        end edit this only         ***
     
         const monthNames = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 
         function init(){
             clock();
+            updateCallSign();
+            updateElement('player', player);
+            updateElement('agency', agency);
+            // updateElement('callsign', callsign);
+            setInterval(updateCallSign, 5000);
+        };
+
+        function updateCallSign(){
+            fetch('callsign.txt')
+            .then(response => response.text())
+            .then(data => {
+                let callsign = document.getElementById('callsign-span');
+                callsign.textContent = data.trim();
+            })
+            .catch(error => console.error('Error:', error));
         };
 
         function clock(){
             let d = new Date();
             updateTime(d);
             updateDate(d);
-            updateElement('player', player);
-            updateElement('agency', agency);
-            updateElement('callsign', callsign);
             let animate = setTimeout(clock, 100);
         };
         
