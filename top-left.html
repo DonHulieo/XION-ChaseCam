@@ -87,7 +87,7 @@
                 <span class="info" id="agency">XXX</span><br />                
                 <span class="info" id="date-span">00 XXX 0000</span>
                 <span class="info" id="time-span">00:00:00</span>
-                <span class="info" id="tz">UTC</span>
+                <span class="info" id="timezone-span">XXXX</span>
             </div>
         </div>
     </body>
@@ -97,6 +97,14 @@
         const player = "B. WHITTAKER";
         const agency = "LEADING SENIOR CONSTABLE";
         // const callsign = "[300]";
+        const timeData = {
+            zone: "Australia/Sydney",
+            names: ["AEDT", "AEST"],
+            dst: {
+                start: { month: 9, week: 1, day: 0, time: "02:00:00" }, // October, first week, Sunday
+                end: { month: 3, week: 1, day: 0, time: "03:00:00" } // April, first week, Sunday
+            }
+        };
         //***        end edit this only         ***
     
         const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -104,6 +112,7 @@
         function init(){
             clock();
             updateCallSign();
+            updateTimezone();
             updateElement('player', player);
             updateElement('agency', agency);
             // updateElement('callsign', callsign);
@@ -118,6 +127,28 @@
                 callsign.textContent = data.trim();
             })
             .catch(error => console.error('Error:', error));
+        };
+
+        function isDstObserved(){
+            const now = new Date();
+            let year = now.getFullYear();
+            let dstStart = new Date(year, timeData.dst.start.month - 1, 1, parseInt(timeData.dst.start.time));
+            let dstEnd = new Date(year, timeData.dst.end.month - 1, 1, parseInt(timeData.dst.end.time));
+            dstStart.setDate(1 + (7 - dstStart.getDay() + timeData.dst.start.day) % 7 + 7 * (timeData.dst.start.week - 1));
+            dstEnd.setDate(1 + (7 - dstEnd.getDay() + timeData.dst.end.day) % 7 + 7 * (timeData.dst.end.week - 1));
+            if (now < dstEnd) {
+                dstStart.setFullYear(dstStart.getFullYear() - 1);
+            }
+            return now >= dstStart && now < dstEnd;
+        };
+
+        function updateTimezone(){
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            if (timezone === timeData.zone) {
+                document.getElementById('timezone-span').textContent = isDstObserved()? timeData.names[0] : timeData.names[1];
+            } else {
+                document.getElementById('timezone-span').textContent = timezone;
+            }
         };
 
         function clock(){
